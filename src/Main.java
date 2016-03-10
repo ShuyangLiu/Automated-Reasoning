@@ -1,8 +1,14 @@
+/**
+ * Main program
+ * */
 
 public class Main
 {
     public static void main(String args[])
     {
-        System.out.println("Hello Intellij!");
+        Sentence s = new Sentence("NOT P OR Q");
+        s.printPosfixList();
+
+        //System.out.println(LogicalOperators.NOT.compareTo(LogicalOperators.OR));
     }
 }

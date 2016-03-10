@@ -1,4 +1,6 @@
-/*A class of logical syntax*/
+/**
+ * A class of propositional logical syntax
+ * */
 
 public class Syntax
 {
