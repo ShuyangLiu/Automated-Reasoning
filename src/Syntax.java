@@ -19,11 +19,6 @@ public class Syntax
         return a || b;
     }
 
-    public static boolean XOR(boolean a , boolean b)
-    {
-        return a ^ b;
-    }
-
     public static boolean IMPLY(boolean a , boolean b) {
         return !a || b;
     }

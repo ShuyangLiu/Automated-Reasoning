@@ -22,14 +22,6 @@ public class Model
         this.model.add(v);
     }
 
-    public List<Variable> getModel() {
-        return model;
-    }
-
-    public void setModel(List<Variable> model) {
-        this.model = model;
-    }
-
     public boolean find(String name)
     {
         for (Variable aModel : this.model) {
