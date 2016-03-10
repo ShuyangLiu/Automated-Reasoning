@@ -67,14 +67,6 @@ public class Sentence
         }
     }
 
-    //Helper Method for debugging
-    public void printPostfixList()
-    {
-        for (Object aParserList : parserList) {
-            System.out.print(aParserList + "\t");
-        }
-    }
-
     //Returns true if the sentence is satisfied by the given model
     public boolean satisfy(Model model)
     {
