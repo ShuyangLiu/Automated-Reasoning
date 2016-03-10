@@ -29,4 +29,14 @@ public class Model
     public void setModel(List<Variable> model) {
         this.model = model;
     }
+
+    public boolean find(String name)
+    {
+        for (Variable aModel : this.model) {
+            if (aModel.getName().equals(name)) {
+                return aModel.getValue();
+            }
+        }
+        return false;
+    }
 }

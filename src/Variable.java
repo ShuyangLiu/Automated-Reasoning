@@ -20,7 +20,7 @@ public class Variable
         this.name = name;
     }
 
-    public boolean isValue()
+    public boolean getValue()
     {
         return value;
     }

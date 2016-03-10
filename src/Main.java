@@ -6,9 +6,18 @@ public class Main
 {
     public static void main(String args[])
     {
-        Sentence s = new Sentence("NOT P OR Q");
-        s.printPosfixList();
+        Sentence s = new Sentence("NOT ( NOT P OR Q )");
+        s.printPostfixList();
+        System.out.println();
 
-        //System.out.println(LogicalOperators.NOT.compareTo(LogicalOperators.OR));
+        Model m = new Model();
+        Variable P = new Variable("P");
+        P.setValue(false);
+        Variable Q = new Variable("Q");
+        Q.setValue(false);
+        m.union(P);
+        m.union(Q);
+
+        System.out.println(s.satisfy(m));
     }
 }
