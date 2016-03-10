@@ -3,19 +3,6 @@ import java.util.Stack;
 
 public class Sentence
 {
-
-    /*For debugging using colors in console*/
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-
-
     private Stack<LogicalOperators> parserStack;
     private LinkedList<Object> parserList;
 
@@ -103,7 +90,8 @@ public class Sentence
 
         for (Object aParserList : parserList) {
 
-            //System.out.println(ANSI_YELLOW+"[DEBUG]Item from list: "+aParserList+ANSI_RESET);
+            //System.out.println(Debug.ANSI_YELLOW+"[DEBUG]Item from list: "+
+            // aParserList+Debug.ANSI_RESET);
 
             if(aParserList instanceof Variable) {
                 interpretStack.push((Variable) aParserList);
@@ -111,7 +99,8 @@ public class Sentence
                 if (aParserList==LogicalOperators.NOT) {
                     Variable x1 = interpretStack.pop();
 
-                    //System.out.println(ANSI_RED+"[DEBUG]Variable x1 is "+x1+ANSI_RESET);
+                    //System.out.println(Debug.ANSI_RED+"[DEBUG]Variable x1 is "+x1+
+                    // Debug.ANSI_RESET);
 
                     boolean x;
 
@@ -122,7 +111,8 @@ public class Sentence
                     }
 
                     result = Syntax.NOT(x);
-                    //System.out.println(ANSI_BLUE+"[DEBUG]result: "+result+ANSI_RESET);
+                    //System.out.println(Debug.ANSI_BLUE+"[DEBUG]result: "+result+
+                    // Debug.ANSI_RESET);
                 } else if (aParserList==LogicalOperators.AND) {
                     Variable x1 = interpretStack.pop();
                     Variable x2 = interpretStack.pop();
@@ -194,7 +184,8 @@ public class Sentence
         if(!interpretStack.isEmpty()) {
             Variable x = interpretStack.pop();
 
-            //System.out.println(ANSI_GREEN+"[DEBUG]Variable x is "+x+ANSI_RESET);
+            //System.out.println(Debug.ANSI_GREEN+"[DEBUG]Variable x is "+x+
+            // Debug.ANSI_RESET);
 
             if(!x.getName().equals("result")) {
                 return model.find(x.getName());
@@ -203,7 +194,8 @@ public class Sentence
             }
         }
 
-        //System.out.println(ANSI_GREEN+"[DEBUG]result: "+result+ANSI_RESET);
+        //System.out.println(Debug.ANSI_GREEN+"[DEBUG]result: "+result+
+        // Debug.ANSI_RESET);
 
         return result;
     }

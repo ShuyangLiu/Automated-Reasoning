@@ -6,24 +6,13 @@ import java.util.ArrayList;
 
 public class KB
 {
-    /*For debugging using colors in console*/
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-
     private ArrayList<Sentence> sentences;
     private ArrayList<String> names;
 
     public KB(ArrayList<Sentence> sentences,ArrayList<String> symbol)
     {
         this.names = symbol;
-        //System.out.println(ANSI_PURPLE+"[DEBUG]names: "+names+ANSI_RESET);
+        //System.out.println(Debug.ANSI_PURPLE+"[DEBUG]names: "+names+Debug.ANSI_RESET);
         this.sentences = sentences;
     }
 
@@ -32,10 +21,10 @@ public class KB
         for(Sentence s : sentences) {
             if(!s.satisfy(model)) {
 
-//                System.out.println(ANSI_YELLOW + "[DEBUG]"+
+//                System.out.println(Debug.ANSI_YELLOW + "[DEBUG]"+
 //                        new Object(){}.getClass().getEnclosingMethod().getName()+": " +
 //                            "this sentence: "+s.getSentence() +
-//                            " does not satisfy model: "+model + ANSI_RESET);
+//                            " does not satisfy model: "+model + Debug.ANSI_RESET);
 
                 return false;
             }
@@ -69,13 +58,13 @@ public class KB
                 rest = new ArrayList<>(symbols.subList(1,symbols.size()));
             }
 
-            //System.out.println(ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+ANSI_RESET);
+            //System.out.println(Debug.ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+Debug.ANSI_RESET);
 
             Variable p = new Variable(P);
             p.setValue(true);
             boolean r1 = TT_CHECK_ALL(s,rest,model.union(p));
 
-            //System.out.println(ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+ANSI_RESET);
+            //System.out.println(Debug.ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+Debug.ANSI_RESET);
 
             p = new Variable(P);
             p.setValue(false);
