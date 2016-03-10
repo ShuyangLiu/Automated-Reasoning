@@ -17,7 +17,16 @@ public class Model
         this.model = new ArrayList<>();
     }
 
-    public void union(Variable v)
+    public Model union(Variable v)
+    {
+        Model n = new Model();
+        this.model.forEach(n::add);
+        n.add(v);
+
+        return n;
+    }
+
+    public void add(Variable v)
     {
         this.model.add(v);
     }

@@ -162,6 +162,11 @@ public class Sentence
             }
         }
 
+        if(!interpretStack.isEmpty()) {
+            Variable x = interpretStack.pop();
+            return model.find(x.getName());
+        }
+
         return result;
     }
 
