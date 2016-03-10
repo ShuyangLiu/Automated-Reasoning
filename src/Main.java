@@ -8,29 +8,42 @@ public class Main
 {
     public static void main(String args[])
     {
-        /*Sentence s = new Sentence("P");
-
-        Model m = new Model();
-        Variable P = new Variable("P");
-        P.setValue(true);
-        Variable Q = new Variable("Q");
-        Q.setValue(false);
-        m.add(P);
-        m.add(Q);
-
-        System.out.println(s.satisfy(m));*/
+//        Sentence s = new Sentence("NOT P");
+//
+//        Model m = new Model();
+//        Variable P = new Variable("P");
+//        P.setValue(false);
+//        Variable Q = new Variable("Q");
+//        Q.setValue(false);
+//        Variable W = new Variable("W");
+//        W.setValue(false);
+//        m.add(P);
+//        m.add(Q);
+//        m.add(W);
+//
+//        System.out.println("[DEBUG]Sentence List: "+s);
+//        System.out.println(s.satisfy(m));
 
         ArrayList<Sentence> sentences = new ArrayList<>();
-        sentences.add(new Sentence("P"));
-        sentences.add(new Sentence("P IMPLY Q"));
+        sentences.add(new Sentence("NOT P11"));
+        sentences.add(new Sentence("B11 IFF ( P12 OR P21 )"));
+        sentences.add(new Sentence("NOT B11"));
+        sentences.add(new Sentence("B21 IFF ( P11 OR P22 OR P31 )"));
+        sentences.add(new Sentence("B21"));
+
 
         ArrayList<String> symbols = new ArrayList<>();
-        symbols.add("P");
-        symbols.add("Q");
+        symbols.add("P11");
+        symbols.add("B11");
+        symbols.add("P12");
+        symbols.add("P21");
+        symbols.add("P31");
+        symbols.add("B21");
+        symbols.add("P22");
 
         KB kb = new KB(sentences,symbols);
 
-        Sentence q = new Sentence("Q");
+        Sentence q = new Sentence("P12");
 
         System.out.println(kb.TT_Entail(q));
 

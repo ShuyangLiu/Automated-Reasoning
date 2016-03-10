@@ -28,9 +28,9 @@ public class Variable
     @Override
     public String toString()
     {
-        return "Variable{" +
+        return "\n"+"Variable{" +
                 "name='" + name + '\'' +
                 ", value=" + value +
-                '}';
+                '}'+"\n";
     }
 }

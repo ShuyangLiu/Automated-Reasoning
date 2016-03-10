@@ -3,16 +3,44 @@ import java.util.Stack;
 
 public class Sentence
 {
+
+    /*For debugging using colors in console*/
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+
     private Stack<LogicalOperators> parserStack;
     private LinkedList<Object> parserList;
+
+    private String sentence;
 
     //Constructor, parse string s into stacks for interpretation in the future
     public Sentence(String s)
     {
+        sentence = s;
         parserStack = new Stack<>();
         parserList = new LinkedList<>();
         parse(s);
     }
+
+    public String getSentence() {
+        return sentence;
+    }
+
+    @Override
+    public String toString() {
+        return "Sentence{" +
+                "parserList=" + parserList +
+                '}';
+    }
+
     //Helper method for parsing
     private void parse(String s)
     {
@@ -74,18 +102,27 @@ public class Sentence
         boolean result = false;
 
         for (Object aParserList : parserList) {
+
+            //System.out.println(ANSI_YELLOW+"[DEBUG]Item from list: "+aParserList+ANSI_RESET);
+
             if(aParserList instanceof Variable) {
                 interpretStack.push((Variable) aParserList);
             } else {
                 if (aParserList==LogicalOperators.NOT) {
                     Variable x1 = interpretStack.pop();
+
+                    //System.out.println(ANSI_RED+"[DEBUG]Variable x1 is "+x1+ANSI_RESET);
+
                     boolean x;
+
                     if(!x1.getName().equals("result")) {
                         x = model.find(x1.getName());
                     } else {
                         x = x1.getValue();
                     }
+
                     result = Syntax.NOT(x);
+                    //System.out.println(ANSI_BLUE+"[DEBUG]result: "+result+ANSI_RESET);
                 } else if (aParserList==LogicalOperators.AND) {
                     Variable x1 = interpretStack.pop();
                     Variable x2 = interpretStack.pop();
@@ -156,8 +193,17 @@ public class Sentence
 
         if(!interpretStack.isEmpty()) {
             Variable x = interpretStack.pop();
-            return model.find(x.getName());
+
+            //System.out.println(ANSI_GREEN+"[DEBUG]Variable x is "+x+ANSI_RESET);
+
+            if(!x.getName().equals("result")) {
+                return model.find(x.getName());
+            } else {
+                return x.getValue();
+            }
         }
+
+        //System.out.println(ANSI_GREEN+"[DEBUG]result: "+result+ANSI_RESET);
 
         return result;
     }
