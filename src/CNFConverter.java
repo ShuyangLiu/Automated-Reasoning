@@ -1,9 +1,6 @@
-import sun.rmi.runtime.Log;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
-
 /**
  * CNF converter
  * */
@@ -19,6 +16,7 @@ public class CNFConverter
         tmp = new Stack<>();
         clauses.push(s);
         convert();
+        separate();
     }
 
     private void convert()
@@ -26,8 +24,93 @@ public class CNFConverter
         doubleImplication();
         singleImplication();
         negation();
-        Sentence sentence = distribute(clauses.peek().getParserList());
+        Sentence sentence = distribute(clauses.pop().getParserList());
         clauses.push(sentence);
+    }
+
+    private void separate()
+    {
+        Sentence sentence = clauses.pop();
+        String s = sentence.getSentence();
+        ArrayList<String> modified = modify(s);
+        for (String clause:modified) {
+            //System.out.println("[DEBUG] clause :: "+clause);
+            clauses.push(new Sentence(clause));
+        }
+    }
+
+    public void printClauses()
+    {
+        while(!tmp.empty()) {
+            tmp.pop();
+        }
+        while(!clauses.empty()) {
+            System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
+            tmp.push(clauses.pop());
+        }
+        while(!tmp.empty()) {
+            clauses.push((Sentence) tmp.pop());
+        }
+    }
+
+    private static String LPRP(String s)
+    {
+        int LP = 0;
+        int RP = 0;
+
+        for(int i=0; i<s.length(); i++) {
+            if(s.charAt(i)=='(') {
+                LP++;
+            }
+            if(s.charAt(i)==')') {
+                RP++;
+            }
+        }
+
+        if(LP>RP) {
+            int i = LP - RP;
+            while(i>0){
+                for(int q=0; q<s.length(); q++) {
+                    if(s.charAt(q)=='(') {
+                        s = s.substring(q+1);
+                        i--;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(LP<RP) {
+            int i = RP-LP;
+            while(i>0){
+                for(int q=s.length()-1; q>=0; q--) {
+                    if(s.charAt(q)==')') {
+                        s = s.substring(0,q-1);
+                        i--;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return s;
+    }
+
+    public static ArrayList<String> modify(String clause)
+    {
+        ArrayList<String> list = new ArrayList<>();
+        if(clause.contains("AND")) {
+            String[] c = clause.split("AND");
+            for (String C:c) {
+                C = LPRP(C);
+                //System.out.println("[DEBUG] C: "+C);
+                list.add(C);
+            }
+        } else {
+            list.add(clause);
+        }
+
+        return list;
     }
 
     private void doubleImplication()
@@ -79,7 +162,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private void singleImplication()
@@ -126,7 +209,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
 
     }
 
@@ -206,7 +289,7 @@ public class CNFConverter
             postfix = CNFConverter.ListToString(list);
         }
 
-        System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private Sentence distribute(LinkedList<Object> list)
@@ -246,17 +329,17 @@ public class CNFConverter
                             Sentence B = (Sentence) tp.pop();
                             Sentence A = (Sentence) tp.pop();
                             Variable C = (Variable) list.get(start);
-                            String distribute = " ( " + A.getSentence() + " OR " + C.getName() + " ) " +
-                                    " AND " + " ( " + B.getSentence() + " OR " + C.getName() + " ) ";
+                            String distribute = " ( " +" ( " + A.getSentence() + " OR " + C.getName() + " ) " +
+                                    " AND " + " ( " + B.getSentence() + " OR " + C.getName() + " ) "+ " ) ";
                             tp.push(new Sentence(distribute));
                         } else if (list.get(start) == LogicalOperators.AND) {
                             Sentence D = (Sentence) tp.pop();
                             Sentence C = (Sentence) tp.pop();
                             Sentence B = (Sentence) tp.pop();
                             Sentence A = (Sentence) tp.pop();
-                            String distribute = " ( " + A.getSentence() + " OR " + B.getSentence() + " ) " +
-                                    " AND " + " ( " + A.getSentence() + " OR " + C.getSentence() + " ) " +
-                                    " AND " + " ( " + A.getSentence() + " OR " + D.getSentence() + " ) ";
+                            String distribute = " ( " +" ( " +" ( " + A.getSentence() + " OR " + B.getSentence() + " ) " +
+                                    " AND " + " ( " + A.getSentence() + " OR " + C.getSentence() + " ) " + " ) "+
+                                    " AND " + " ( " + A.getSentence() + " OR " + D.getSentence() + " ) "+ " ) ";
                             tp.push(new Sentence(distribute));
                         }
                     } else if (start > end) {
@@ -281,8 +364,8 @@ public class CNFConverter
                         Sentence b = (Sentence) tp.pop();
                         Sentence a = (Sentence) tp.pop();
 
-                        String distribute = " ( " + a.getSentence() + " OR " + b.getSentence() + " ) " +
-                                " AND " + " ( " + a.getSentence() + " OR " + c.getSentence() + " ) ";
+                        String distribute = " ( " + " ( " + a.getSentence() + " OR " + b.getSentence() + " ) " +
+                                " AND " + " ( " + a.getSentence() + " OR " + c.getSentence() + " ) "+ " ) ";
 
                         tp.push(new Sentence(distribute));
                     } else {
@@ -309,8 +392,8 @@ public class CNFConverter
                         }
                         Sentence b = (Sentence) tp.pop();
                         Sentence a = (Sentence) tp.pop();
-                        String distribute = " ( " + a.getSentence() + " OR " + c.getSentence() + " ) " +
-                                " AND " + " ( " + b.getSentence() + " OR " + c.getSentence() + " ) ";
+                        String distribute = " ( " +" ( " + a.getSentence() + " OR " + c.getSentence() + " ) " +
+                                " AND " + " ( " + b.getSentence() + " OR " + c.getSentence() + " ) "+ " ) ";
                         tp.push(new Sentence(distribute));
                     }
                     index = end + 2;
@@ -370,23 +453,10 @@ public class CNFConverter
         }
     }
 
-    public static Pair match(String s)
-    {
-        String [] array = s.split("\\s+");
-        int i,j;
-        for(i=0; i<array.length; i++)
-            if (array[i].equals("AND")) break;
-        for(j=0; j<array.length; j++)
-            if (array[j].equals("OR") && j > i && i != array.length) break;
-        if (i < j && i!=0 && j<array.length)
-            return (new Pair(i, j));
-        else
-            return null;
-    }
-
-    public void printClauses()
+    public void printClause()
     {
         System.out.println(clauses.peek().getSentence());
+        System.out.println(Debug.ANSI_YELLOW+CNFConverter.ListToString(clauses.peek().getParserList())+Debug.ANSI_RESET);
     }
 
     public static String ListToString(LinkedList<Object> list)

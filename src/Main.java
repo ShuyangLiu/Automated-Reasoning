@@ -52,17 +52,11 @@ public class Main
 
         //System.out.print(LogicalOperators.AND.toString());
 
-        Sentence s = new Sentence("( A IMPLY B ) OR C");
+        Sentence s = new Sentence("( A IMPLY B ) OR ( C AND D )");
         System.out.println(CNFConverter.ListToString(s.getParserList()));
         CNFConverter convert = new CNFConverter(s);
         convert.printClauses();
-//        System.out.println(new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )")
-//                .getParserList());
-//        System.out.println(CNFConverter.checkList(
-//                (new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )"))
-//                        .getParserList()));
-//        System.out.println(CNFConverter.matchList(
-//                (new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )"))
-//                        .getParserList()));
+
+        //System.out.println(CNFConverter.modify("( ( A OR C ) AND D )"));
     }
 }
