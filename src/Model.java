@@ -22,7 +22,6 @@ public class Model
         Model n = new Model();
         this.model.forEach(n::add);
         n.add(v);
-
         return n;
     }
 
@@ -35,11 +34,6 @@ public class Model
     {
         for (Variable aModel : this.model) {
             if (aModel.getName().equals(name)) {
-
-                //System.out.println(Debug.ANSI_CYAN+
-                // "[DEBUG]find: "+name+
-                // " is "+aModel.getValue()+Debug.ANSI_RESET);
-
                 return aModel.getValue();
             }
         }
@@ -48,8 +42,8 @@ public class Model
 
     @Override
     public String toString() {
-        return "Model{" +
-                "model=" + model +
+        return "Model{" +"\n"+
+                "model=" + model +"\n"+
                 '}';
     }
 }

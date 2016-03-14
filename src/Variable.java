@@ -29,8 +29,8 @@ public class Variable
     public String toString()
     {
         return "Variable{" +
-                "name='" + name + '\'' +
-                ", value=" + value +
+                "name='" + name + '\'' +"\n"+
+                ", value=" + value +"\n"+
                 '}'+"\n";
     }
 }

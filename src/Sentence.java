@@ -23,8 +23,9 @@ public class Sentence
 
     @Override
     public String toString() {
-        return "Sentence{" +
-                "parserList=" + parserList +
+        return "Sentence{" +"\n"+
+                "String=" + sentence+"\n"+
+                "parserList=" + parserList +"\n"+
                 '}';
     }
 

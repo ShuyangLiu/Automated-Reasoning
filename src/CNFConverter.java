@@ -19,6 +19,22 @@ public class CNFConverter
         separate();
     }
 
+    public ArrayList<Sentence> get()
+    {
+        ArrayList<Sentence> list = new ArrayList<>();
+        while(!tmp.empty()) {
+            tmp.pop();
+        }
+        while(!clauses.empty()) {
+            list.add(clauses.peek());
+            tmp.push(clauses.pop());
+        }
+        while(!tmp.empty()) {
+            clauses.push((Sentence) tmp.pop());
+        }
+        return list;
+    }
+
     private void convert()
     {
         doubleImplication();
@@ -127,8 +143,8 @@ public class CNFConverter
                     Sentence A = (Sentence) tmp.pop();
                     String a = A.getSentence();
                     String b = B.getSentence();
-                    String n = " (" + " " + a + " " + "IMPLY" + " " + b + " " + ")" + " " + "AND" +
-                            " " + "(" + " " + b + " " + "IMPLY" + " " + a + " " + ") ";
+                    String n = " (" +" (" + " " + a + " " + "IMPLY" + " " + b + " " + ")" + " " + "AND" +
+                            " " + "(" + " " + b + " " + "IMPLY" + " " + a + " " + ") "+ ") ";
                     Sentence N = new Sentence(n);
                     tmp.push(N);
                 } else if ((aParserList instanceof LogicalOperators)) {
@@ -162,7 +178,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        //System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private void singleImplication()
@@ -209,7 +225,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        //System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
 
     }
 
@@ -289,7 +305,7 @@ public class CNFConverter
             postfix = CNFConverter.ListToString(list);
         }
 
-        //System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private Sentence distribute(LinkedList<Object> list)
@@ -373,7 +389,7 @@ public class CNFConverter
                         LinkedList<Object> subList = new LinkedList<>();
                         for (int i = start; i <= end; i++) {
                             subList.add(list.get(i));
-                        }
+                        }/////////////////////////////////
                         Sentence c = distribute(subList);
                         for (int i = index; i < start - 1; i++) {
                             if (list.get(i) instanceof Variable) {
@@ -515,12 +531,20 @@ public class CNFConverter
                 break;
             j++;
         }
-        if (i < j && i < list.size() && j<list.size() && j!=i+3)
-            return (new Pair(i, j));
-        else
-            return null;
 
+        if (i < j && i < list.size() && j<list.size() && j!=i+3) {
+            int q ;
+            for (q=j; q>=0; q--) {
+                if(list.get(q) == LogicalOperators.AND) {
+                    break;
+                }
+            }
+            return new Pair(q,j);
+        } else {
+            return null;
+        }
     }
+
 
 
 

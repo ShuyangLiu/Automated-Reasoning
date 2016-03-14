@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
 * A Knowledge Base that consists a list of sentences
@@ -16,16 +17,60 @@ public class KB
         this.sentences = sentences;
     }
 
+    public void CNF()
+    {
+        ArrayList<Sentence>tmp = new ArrayList<>();
+        for (Sentence s:sentences) {
+            System.out.println(Debug.ANSI_PURPLE+"S: "+s.getSentence()+Debug.ANSI_RESET);
+            System.out.println(Debug.ANSI_PURPLE+"S: "+CNFConverter.ListToString(s.getParserList())+Debug.ANSI_RESET);
+
+            ArrayList<Sentence> list = (new CNFConverter(s).get());
+            tmp.addAll(list.stream().collect(Collectors.toList()));
+        }
+        this.sentences = tmp;
+    }
+
+    public void printKB()
+    {
+        System.out.println("Current KB: ");
+        for (Sentence s:sentences) {
+            System.out.println(Debug.ANSI_YELLOW+s.getSentence()+Debug.ANSI_RESET);
+        }
+    }
+
+    public void addSentence(Sentence s)
+    {
+        sentences.add(s);
+    }
+
+    @Override
+    public String toString() {
+        return "KB{" +
+                "sentences=" + sentences +
+                ", names=" + names +
+                '}';
+    }
+
+    public ArrayList<Sentence> getSentences() {
+        return sentences;
+    }
+
+    public void setSentences(ArrayList<Sentence> sentences) {
+        this.sentences = sentences;
+    }
+
+    public ArrayList<String> getNames() {
+        return names;
+    }
+
+    public void setNames(ArrayList<String> names) {
+        this.names = names;
+    }
+
     public boolean PL_TRUE(Model model)
     {
         for(Sentence s : sentences) {
             if(!s.satisfy(model)) {
-
-//                System.out.println(Debug.ANSI_YELLOW + "[DEBUG]"+
-//                        new Object(){}.getClass().getEnclosingMethod().getName()+": " +
-//                            "this sentence: "+s.getSentence() +
-//                            " does not satisfy model: "+model + Debug.ANSI_RESET);
-
                 return false;
             }
         }
@@ -40,31 +85,19 @@ public class KB
     public boolean TT_CHECK_ALL(Sentence s, ArrayList<String> symbols,Model model)
     {
         if(symbols.isEmpty()) {
-//            System.out.println("[DEBUG]" + this.getClass() + ": " + "model is " + model);
-//            System.out.println("[DEBUG]" + this.getClass() + ": " + "KB is " + PL_TRUE(model));
-//            System.out.println("[DEBUG]" + this.getClass() + ": " + "s is " + s.satisfy(model));
-
             return (!PL_TRUE(model)) || (s.satisfy(model));
         } else {
             String P = symbols.get(0);
-
-            //System.out.println("[DEBUG]" + this.getClass() + ": " + "P is " + P);
-
             ArrayList<String> rest;
-
             if(symbols.size()==1) {
                 rest = new ArrayList<>();
             }else {
                 rest = new ArrayList<>(symbols.subList(1,symbols.size()));
             }
 
-            //System.out.println(Debug.ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+Debug.ANSI_RESET);
-
             Variable p = new Variable(P);
             p.setValue(true);
             boolean r1 = TT_CHECK_ALL(s,rest,model.union(p));
-
-            //System.out.println(Debug.ANSI_CYAN+"[DEBUG]"+"rest is: "+rest+Debug.ANSI_RESET);
 
             p = new Variable(P);
             p.setValue(false);
