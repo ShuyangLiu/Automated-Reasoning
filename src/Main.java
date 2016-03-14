@@ -24,29 +24,45 @@ public class Main
 //        System.out.println("[DEBUG]Sentence List: "+s);
 //        System.out.println(s.satisfy(m));
 
-        ArrayList<Sentence> sentences = new ArrayList<>();
-        sentences.add(new Sentence("NOT P11"));
-        sentences.add(new Sentence("B11 IFF ( P12 OR P21 )"));
-        sentences.add(new Sentence("NOT B11"));
-        sentences.add(new Sentence("B21 IFF ( P11 OR P22 OR P31 )"));
-        sentences.add(new Sentence("B21"));
+//        ArrayList<Sentence> sentences = new ArrayList<>();
+//        sentences.add(new Sentence("NOT P11"));
+//        sentences.add(new Sentence("B11 IFF ( P12 OR P21 )"));
+//        sentences.add(new Sentence("NOT B11"));
+//        sentences.add(new Sentence("B21 IFF ( P11 OR P22 OR P31 )"));
+//        sentences.add(new Sentence("B21"));
+//
+//
+//        ArrayList<String> symbols = new ArrayList<>();
+//        symbols.add("P11");
+//        symbols.add("B11");
+//        symbols.add("P12");
+//        symbols.add("P21");
+//        symbols.add("P31");
+//        symbols.add("B21");
+//        symbols.add("P22");
+//
+//        KB kb = new KB(sentences,symbols);
+//
+//        Sentence q = new Sentence("P12");
+//
+//        System.out.println(kb.TT_Entail(q));
 
+//        CNFConverter convert = new CNFConverter(new Sentence("A IFF B"));
+//        convert.printClauses();
 
-        ArrayList<String> symbols = new ArrayList<>();
-        symbols.add("P11");
-        symbols.add("B11");
-        symbols.add("P12");
-        symbols.add("P21");
-        symbols.add("P31");
-        symbols.add("B21");
-        symbols.add("P22");
+        //System.out.print(LogicalOperators.AND.toString());
 
-        KB kb = new KB(sentences,symbols);
-
-        Sentence q = new Sentence("P12");
-
-        System.out.println(kb.TT_Entail(q));
-
-
+        Sentence s = new Sentence("( A IMPLY B ) OR C");
+        System.out.println(CNFConverter.ListToString(s.getParserList()));
+        CNFConverter convert = new CNFConverter(s);
+        convert.printClauses();
+//        System.out.println(new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )")
+//                .getParserList());
+//        System.out.println(CNFConverter.checkList(
+//                (new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )"))
+//                        .getParserList()));
+//        System.out.println(CNFConverter.matchList(
+//                (new Sentence("( A OR ( C AND D ) ) AND ( B OR ( C AND D ) )"))
+//                        .getParserList()));
     }
 }

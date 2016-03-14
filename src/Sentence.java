@@ -31,8 +31,7 @@ public class Sentence
     //Helper method for parsing
     private void parse(String s)
     {
-        String[] array = s.split(" ");
-
+        String[] array = s.split("\\s+");
         for (String anArray : array) {
             switch (anArray) {
                 case "NOT":
@@ -61,7 +60,7 @@ public class Sentence
                     parserStack.push(op);
                     break;
                 }
-                case ")":
+                case ")": {
                     while (parserStack.peek().compareTo(LogicalOperators.LP) != 0) {
                         LogicalOperators ops = parserStack.pop();
                         parserList.add(ops);
@@ -69,10 +68,15 @@ public class Sentence
 
                     parserStack.pop();
                     break;
-                default:
+                }
+                case "": {
+                    break;
+                }
+                default: {
                     Variable v = new Variable(anArray);
                     parserList.add(v);
                     break;
+                }
             }
         }
 
@@ -80,6 +84,10 @@ public class Sentence
             LogicalOperators ops = parserStack.pop();
             parserList.add(ops);
         }
+    }
+
+    public LinkedList<Object> getParserList() {
+        return parserList;
     }
 
     //Returns true if the sentence is satisfied by the given model
@@ -157,7 +165,7 @@ public class Sentence
                     } else {
                         y = x2.getValue();
                     }
-                    result = Syntax.IMPLY(x,y);
+                    result = Syntax.IMPLY(y,x);
                 } else {
                     Variable x1 = interpretStack.pop();
                     Variable x2 = interpretStack.pop();
