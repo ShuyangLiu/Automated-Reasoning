@@ -17,6 +17,10 @@ public class Sentence
         parse(s);
     }
 
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
+    }
+
     public String getSentence() {
         return sentence;
     }

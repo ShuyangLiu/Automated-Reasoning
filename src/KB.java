@@ -28,6 +28,15 @@ public class KB
             tmp.addAll(list.stream().collect(Collectors.toList()));
         }
         this.sentences = tmp;
+        for (Sentence s:sentences){
+            String m = s.getSentence();
+            int start;
+            int end;
+            for(start=0; start<m.length(); start++) if (m.charAt(start) != ' ') break;
+            for(end=m.length()-1; end>=0; end--) if (m.charAt(end) != ' ') break;
+            m = m.substring(start,end+1);
+            s.setSentence(m);
+        }
     }
 
     public void printKB()

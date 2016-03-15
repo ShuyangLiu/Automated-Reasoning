@@ -42,6 +42,7 @@ public class CNFConverter
         negation();
         Sentence sentence = distribute(clauses.pop().getParserList());
         clauses.push(sentence);
+        printClause();
     }
 
     private void separate()
@@ -339,6 +340,11 @@ public class CNFConverter
                                 Sentence A = (Sentence) tp.pop();
                                 String rebuild = " ( NOT " + A.getSentence()+" ) ";
                                 tp.push(new Sentence(rebuild));
+                            } else if (list.get(i) == LogicalOperators.AND) {
+                                Sentence B = (Sentence) tp.pop();
+                                Sentence A = (Sentence) tp.pop();
+                                String rebuild = " ( " + A.getSentence() + " AND " + B.getSentence() + " ) ";
+                                tp.push(new Sentence(rebuild));
                             }
                         }
                         if (list.get(start) instanceof Variable) {
@@ -373,6 +379,11 @@ public class CNFConverter
                                 Sentence A = (Sentence) tp.pop();
                                 String rebuild = " ( NOT " + A.getSentence()+" ) ";
                                 tp.push(new Sentence(rebuild));
+                            } else if (list.get(i) == LogicalOperators.AND) {
+                                Sentence B = (Sentence) tp.pop();
+                                Sentence A = (Sentence) tp.pop();
+                                String rebuild = " ( " + A.getSentence() + " AND " + B.getSentence() + " ) ";
+                                tp.push(new Sentence(rebuild));
                             }
                         }
 
@@ -389,7 +400,7 @@ public class CNFConverter
                         LinkedList<Object> subList = new LinkedList<>();
                         for (int i = start; i <= end; i++) {
                             subList.add(list.get(i));
-                        }/////////////////////////////////
+                        }
                         Sentence c = distribute(subList);
                         for (int i = index; i < start - 1; i++) {
                             if (list.get(i) instanceof Variable) {
@@ -403,6 +414,11 @@ public class CNFConverter
                             } else if (list.get(i) == LogicalOperators.NOT) {
                                 Sentence A = (Sentence) tp.pop();
                                 String rebuild = " ( NOT " + A.getSentence()+" ) ";
+                                tp.push(new Sentence(rebuild));
+                            } else if (list.get(i) == LogicalOperators.AND) {
+                                Sentence B = (Sentence) tp.pop();
+                                Sentence A = (Sentence) tp.pop();
+                                String rebuild = " ( " + A.getSentence() + " AND " + B.getSentence() + " ) ";
                                 tp.push(new Sentence(rebuild));
                             }
                         }
@@ -471,8 +487,7 @@ public class CNFConverter
 
     public void printClause()
     {
-        System.out.println(clauses.peek().getSentence());
-        System.out.println(Debug.ANSI_YELLOW+CNFConverter.ListToString(clauses.peek().getParserList())+Debug.ANSI_RESET);
+        System.out.println(Debug.ANSI_GREEN+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     public static String ListToString(LinkedList<Object> list)
@@ -532,14 +547,17 @@ public class CNFConverter
             j++;
         }
 
-        if (i < j && i < list.size() && j<list.size() && j!=i+3) {
+        if (i < j && i < list.size() && j<list.size()) {
             int q ;
             for (q=j; q>=0; q--) {
                 if(list.get(q) == LogicalOperators.AND) {
                     break;
                 }
             }
-            return new Pair(q,j);
+            if((j-q)<=2) {
+                return new Pair(q, j);
+            }
+            return null;
         } else {
             return null;
         }
