@@ -27,10 +27,7 @@ public class Sentence
 
     @Override
     public String toString() {
-        return "Sentence{" +"\n"+
-                "String=" + sentence+"\n"+
-                "parserList=" + parserList +"\n"+
-                '}';
+        return sentence;
     }
 
     //Helper method for parsing
@@ -211,6 +208,11 @@ public class Sentence
         // Debug.ANSI_RESET);
 
         return result;
+    }
+
+    public boolean isEmpty()
+    {
+        return this.getSentence().equals("");
     }
 
 
