@@ -3,6 +3,11 @@ import java.util.LinkedList;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+/**
+ * Sentence Class
+ * Author: Shuyang Liu
+ * */
+
 public class Sentence
 {
     private Stack<LogicalOperators> parserStack;

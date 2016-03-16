@@ -7,8 +7,9 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 /**
-* A Knowledge Base that consists a list of sentences
-* */
+ * A Knowledge Base that consists a list of sentences
+ * Author: Shuyang Liu
+ * */
 
 public class KB
 {
@@ -26,9 +27,8 @@ public class KB
     {
         ArrayList<Sentence>tmp = new ArrayList<>();
         for (Sentence s:sentences) {
-            System.out.println(Debug.ANSI_PURPLE+"S: "+s.getSentence()+Debug.ANSI_RESET);
-            System.out.println(Debug.ANSI_PURPLE+"S: "+CNFConverter.ListToString(s.getParserList())+Debug.ANSI_RESET);
-
+            //System.out.println(Debug.ANSI_PURPLE+"S: "+s.getSentence()+Debug.ANSI_RESET);
+            //System.out.println(Debug.ANSI_PURPLE+"S: "+CNFConverter.ListToString(s.getParserList())+Debug.ANSI_RESET);
             ArrayList<Sentence> list = (new CNFConverter(s).get());
             tmp.addAll(list.stream().collect(Collectors.toList()));
         }

@@ -1,5 +1,6 @@
 /**
  * A helper class setting global color codes for debugging
+ * Author: Shuyang Liu
  * */
 public class Debug
 {

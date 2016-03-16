@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * A Model is a set of truth assignments (a list of variables)
  * Representing a possible world
+ * Author: Shuyang Liu
  */
 
 

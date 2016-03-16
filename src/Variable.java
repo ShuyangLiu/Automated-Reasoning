@@ -1,3 +1,7 @@
+/**
+ * Variable (Symbol) class
+ * Author: Shuyang Liu
+ * */
 
 public class Variable
 {

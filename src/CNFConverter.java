@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
+
 /**
  * CNF converter
+ * Author: Shuyang Liu
  * */
+
 public class CNFConverter
 {
     public Stack<Sentence> clauses;

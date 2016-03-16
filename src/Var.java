@@ -1,5 +1,12 @@
 import java.util.Comparator;
 
+/**
+ * Var class
+ * (Actually the same as Variable class but has override methods for comparator)
+ * (Only used for sentences in CNF)
+ * Author: Shuyang Liu
+ * */
+
 public class Var implements Comparable<Var>, Comparator<Var>
 {
     private boolean positive;
