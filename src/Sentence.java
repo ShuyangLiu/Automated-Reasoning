@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class Sentence
 {
@@ -215,5 +217,109 @@ public class Sentence
         return this.getSentence().equals("");
     }
 
+    public static boolean isSubset(ArrayList<Sentence> set1, ArrayList<Sentence> set2)
+    {
+        //Assume set1 and set2 are sets of sentences in CNF
+        //Return true is every sentence in set1 is also contained in set2
+
+        for(Sentence s1 : set1){
+            boolean found = false;
+            for(Sentence s2 :set2){
+                if(s1.isEqualTo(s2)){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static ArrayList<Sentence> Union(ArrayList<Sentence> l1, ArrayList<Sentence> l2)
+    {
+        ArrayList <Sentence> list = new ArrayList<>();
+        list.addAll(l1.stream().collect(Collectors.toList()));
+        l2.stream().filter(s -> !Sentence.Contain(list, s)).forEach(list::add);
+        return list;
+    }
+
+    public static boolean Contain(ArrayList<Sentence> l1,Sentence s)
+    {
+        //Assume in CNF
+        for(Sentence S : l1){
+            if (s.isEqualTo(S)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Sentence){
+            if(CNFConverter.ListToString(((Sentence) obj).getParserList()).equals(CNFConverter.ListToString(this.getParserList()))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isEqualTo(Sentence s)
+    {
+        //Assume s and this are both in CNF
+
+        ArrayList<Var> v1 = new ArrayList<>();
+        ArrayList<Var> v2 = new ArrayList<>();
+
+        LinkedList<Object> list1 = this.getParserList();
+        LinkedList<Object> list2 = s.getParserList();
+
+        list1.stream().filter(obj -> obj instanceof Variable).forEach(obj -> {
+            if (list1.size()>1) {
+                if (list1.get(list1.indexOf(obj) + 1) == LogicalOperators.NOT) {
+                    Var v = new Var(false, ((Variable) obj).getName());
+                    v1.add(v);
+                } else {
+                    Var v = new Var(true, ((Variable) obj).getName());
+                    v1.add(v);
+                }
+            } else if (list1.size()==1) {
+                Var v = new Var(true, ((Variable) obj).getName());
+                v1.add(v);
+            }
+        });
+        list2.stream().filter(obj -> obj instanceof Variable).forEach(obj -> {
+            if (list2.size()>1) {
+                if (list2.get(list2.indexOf(obj) + 1) == LogicalOperators.NOT) {
+                    Var v = new Var(false, ((Variable) obj).getName());
+                    v2.add(v);
+                } else {
+                    Var v = new Var(true, ((Variable) obj).getName());
+                    v2.add(v);
+                }
+            } else if (list2.size()==1){
+                Var v = new Var(true, ((Variable) obj).getName());
+                v2.add(v);
+            }
+        });
+
+        if (v1.size() != v2.size()) {
+            return false;
+        }
+
+        v1.sort(new Var());
+        v2.sort(new Var());
+
+        for(int i=0; i<v1.size(); i++){
+            if(!(v1.get(i).equals(v2.get(i)))){
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 }

@@ -101,11 +101,23 @@ public class KB
         if(list.size()!=0){
             for (Object object:list) {
                 if(object instanceof  Variable) {
-                    if ((l1.get(l1.indexOf(object) + 1) == LogicalOperators.NOT &&
-                            l2.get(l2.indexOf(object) + 1) != LogicalOperators.NOT) ||
-                            (l1.get(l1.indexOf(object) + 1) != LogicalOperators.NOT &&
-                                    l2.get(l2.indexOf(object) + 1) == LogicalOperators.NOT)) {
-                        return true;
+                    if(l1.size()>1 && l2.size()>1) {
+                        if ((l1.get(l1.indexOf(object) + 1) == LogicalOperators.NOT &&
+                                l2.get(l2.indexOf(object) + 1) != LogicalOperators.NOT) ||
+                                (l1.get(l1.indexOf(object) + 1) != LogicalOperators.NOT &&
+                                        l2.get(l2.indexOf(object) + 1) == LogicalOperators.NOT)) {
+                            return true;
+                        }
+                    } else {
+                        if (l1.size()==1 && l2.size()>1){
+                            if(l2.get(l2.indexOf(object) + 1) == LogicalOperators.NOT){
+                                return true;
+                            }
+                        } else if (l1.size()>1 && l2.size()==1){
+                            if(l1.get(l1.indexOf(object) + 1) == LogicalOperators.NOT){
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -115,7 +127,7 @@ public class KB
     }
 
     @Nullable
-    public static String PL_RESOLVE(Sentence c1, Sentence c2)
+    public static Sentence PL_RESOLVE(Sentence c1, Sentence c2)
     {
         if(!canResolve(c1,c2)){
             return null;
@@ -125,17 +137,24 @@ public class KB
         ArrayList<Var> s2 = new ArrayList<>();
         ArrayList<Var> s3 = new ArrayList<>();
 
+
         LinkedList<Object> l1 = c1.getParserList();
         LinkedList<Object> l2 = c2.getParserList();
 
         for(int i=0; i<l1.size(); i++) {
             if(l1.get(i) instanceof Variable){
-                if(l1.get(i+1) == LogicalOperators.NOT){
-                    Var s = new Var(false,((Variable) l1.get(i)).getName());
-                    s1.add(s);
-                    s3.add(s);
-                } else {
-                    Var s = new Var(true,((Variable) l1.get(i)).getName());
+                if (l1.size()>1) {
+                    if (l1.get(i + 1) == LogicalOperators.NOT) {
+                        Var s = new Var(false, ((Variable) l1.get(i)).getName());
+                        s1.add(s);
+                        s3.add(s);
+                    } else {
+                        Var s = new Var(true, ((Variable) l1.get(i)).getName());
+                        s1.add(s);
+                        s3.add(s);
+                    }
+                } else if (l1.size()==1) {
+                    Var s = new Var(true, ((Variable) l1.get(i)).getName());
                     s1.add(s);
                     s3.add(s);
                 }
@@ -143,23 +162,43 @@ public class KB
         }
         for(int i=0; i<l2.size(); i++) {
             if(l2.get(i) instanceof Variable){
-                if(l2.get(i+1) == LogicalOperators.NOT){
-                    Var s = new Var(false,((Variable) l2.get(i)).getName());
-                    s2.add(s);
-                    s3.add(s);
-                } else {
-                    Var s = new Var(true,((Variable) l2.get(i)).getName());
+                if(l2.size()>1) {
+                    if (l2.get(i + 1) == LogicalOperators.NOT) {
+                        Var s = new Var(false, ((Variable) l2.get(i)).getName());
+                        s2.add(s);
+                        s3.add(s);
+                    } else {
+                        Var s = new Var(true, ((Variable) l2.get(i)).getName());
+                        s2.add(s);
+                        s3.add(s);
+                    }
+                } else if (l2.size()==1){
+                    Var s = new Var(true, ((Variable) l2.get(i)).getName());
                     s2.add(s);
                     s3.add(s);
                 }
             }
         }
 
+        int counter = 0;
         for (Var aS1 : s1) {
-            s2.stream().filter(aS2 -> Var.isComplement(aS1, aS2)).forEach(aS2 -> {
-                s3.remove(aS1);
-                s3.remove(aS2);
-            });
+            for (Var aS2 : s2) {
+                if (Var.isComplement(aS1,aS2)){
+                    counter++;
+                }
+            }
+        }
+
+
+        if (counter==1) {
+            for (Var aS1 : s1) {
+                s2.stream().filter(aS2 -> Var.isComplement(aS1, aS2)).forEach(aS2 -> {
+                    s3.remove(aS1);
+                    s3.remove(aS2);
+                });
+            }
+        } else {
+            return null;
         }
 
         for (Var aS1 : s1) {
@@ -169,14 +208,60 @@ public class KB
         String sentence = "";
 
         for (Var aS3 : s3) {
-            sentence = sentence + " "+ aS3.getName() + " " + " OR ";
+            if (aS3.isPositive())
+            {
+                sentence = sentence + " "+ aS3.getName() + " " + " OR ";
+            }
+            else
+            {
+                sentence = sentence + " ( NOT "+ aS3.getName() + " ) " + " OR ";
+            }
         }
 
         if(!sentence.equals("")) {
             sentence = sentence.substring(0,sentence.length()-4);
         }
 
-        return sentence;
+        return new Sentence(sentence);
+
+    }
+
+    public boolean PL_RESOLUTION(Sentence s)
+    {
+        //Assume s does not contain additional symbols
+        //Add the negation of s to KB
+        this.addSentence(new Sentence("NOT ( "+s.getSentence()+" ) "));
+        //Convert the whole kb to CNF
+        this.CNF();
+
+        ArrayList<Sentence> clauses = this.sentences;
+
+        while(true) {
+            ArrayList<Sentence> New = new ArrayList<>();
+            for(int i=0; i<clauses.size(); i++) {
+                //System.out.println(Debug.ANSI_CYAN+"i : "+i+Debug.ANSI_RESET);
+                for (int j=0; j<clauses.size(); j++) {
+                    //System.out.println(Debug.ANSI_GREEN+"j : "+j+Debug.ANSI_RESET);
+                    if (i != j) {
+                        Sentence s1 = clauses.get(i);
+                        Sentence s2 = clauses.get(j);
+                        Sentence resolvent = KB.PL_RESOLVE(s1, s2);
+                        if (resolvent != null) {
+                            if (resolvent.getSentence().equals("")) {
+                                return true;
+                            }
+                            if(! Sentence.Contain(New,resolvent)) {
+                                New.add(resolvent);
+                            }
+                        }
+                    }
+                }
+            }
+            if(Sentence.isSubset(New,clauses)){
+                return false;
+            }
+            clauses = Sentence.Union(clauses,New);
+        }
 
     }
 

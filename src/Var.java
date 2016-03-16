@@ -1,11 +1,16 @@
+import java.util.Comparator;
 
-public class Var
+public class Var implements Comparable<Var>, Comparator<Var>
 {
     private boolean positive;
 
     public Var(boolean positive, String name) {
         this.positive = positive;
         this.name = name;
+    }
+
+    public Var(){
+        //an empty constructor if used as a comparator
     }
 
     public String getName() {
@@ -28,12 +33,15 @@ public class Var
     private String name;
 
     @Override
-    public boolean equals(Object obj) {
+    public int compare(Var o1, Var o2) {
+        return o1.compareTo(o2);
+    }
 
+    @Override
+    public boolean equals(Object obj) {
         if(!(obj instanceof Var)){
             return false;
         }
-
         Var v2 = (Var) obj;
         return (this.getName().equals(v2.getName())) &&
                 (this.isPositive() == v2.isPositive());
@@ -48,5 +56,10 @@ public class Var
     @Override
     public String toString() {
         return name+" : "+positive+"\n";
+    }
+
+    @Override
+    public int compareTo(Var o) {
+        return this.name.compareTo(o.getName());
     }
 }

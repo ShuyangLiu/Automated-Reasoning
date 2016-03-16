@@ -42,7 +42,7 @@ public class CNFConverter
         negation();
         Sentence sentence = distribute(clauses.pop().getParserList());
         clauses.push(sentence);
-        printClause();
+        //printClause();
     }
 
     private void separate()
@@ -179,7 +179,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_YELLOW+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private void singleImplication()
@@ -226,7 +226,7 @@ public class CNFConverter
             clauses.push((Sentence) tmp.pop());
         }
 
-        System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_RED+clauses.peek().getSentence()+Debug.ANSI_RESET);
 
     }
 
@@ -306,7 +306,7 @@ public class CNFConverter
             postfix = CNFConverter.ListToString(list);
         }
 
-        System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
+        //System.out.println(Debug.ANSI_CYAN+clauses.peek().getSentence()+Debug.ANSI_RESET);
     }
 
     private Sentence distribute(LinkedList<Object> list)
